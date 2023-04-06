@@ -10,7 +10,7 @@ class evve_orographic:
         '''
         Class for orographic updraft computations using two different models:
         
-				  'evve': Orographic estimation according to Thedin et al. (2023)
+          'evve': Orographic estimation according to Thedin et al. (2023)
           'bo04': Orographic estimation according to Brandes and Ombalski (2004)
 
         - Thedin, R, Brandes, D, Quon, E, Sandhu, R, Tripp, C. "A three-dimensional model
@@ -64,8 +64,8 @@ class evve_orographic:
     def calcOrographicUpdraft (self, wdir, h, wspdAtRef=None, wspdAtHeightH=None, model=None):
         '''
         Calculates the orographic updraft according to the the model requested.
-				The options are:
-				'evve': Orographic estimation according to Thedin et al. (2023)
+        The options are:
+        'evve': Orographic estimation according to Thedin et al. (2023)
         'bo04': Orographic estimation according to Brandes and Ombalski (2004)
 
         Inputs:
@@ -193,7 +193,7 @@ class evve_orographic:
 
         print('  Computing Sx adjustment factor from the EVVE model (2/3)..')
         self._calc_sx()
-        factor_sx = 1 + np.tan(np.deg2rad(self.ds['sx']))
+        factor_sx = 1 + np.tan(np.deg2rad(self.ds['sx']))   # Eq. (5)
 
         return factor_sx
 
@@ -240,7 +240,6 @@ class evve_orographic:
         if inplace:
             self.ds[self.updraft_var] = w0_threshold
         else:
-            #thresh_var = self.updraft_var + 
             self.ds[self.updraft_var+'_threshold'] = w0_threshold
         
 
@@ -384,9 +383,6 @@ class evve_orographic:
         angle_mod = 90. * np.divide(dz_dx, np.absolute(dz_dx))
         aspect[1:-1, 1:-1] = 180. - angle + angle_mod
 
-        # Change reference
-        #aspect[1:-1, 1:-1] = (-aspect[1:-1, 1:-1]+90)%360
-
         # Add results to main dataset
         self.ds['aspect'] = (('x','y'), aspect)
 
@@ -419,7 +415,7 @@ class evve_orographic:
         
         xx, yy = np.meshgrid(self.ds['x'], self.ds['y'], indexing='ij')
 
-        # get resolution (assumes uniform resolution)
+        # Get number of points
         npoints = 1+int(dmax/self.res)
         if dmax < self.res:
             raise ValueError('dmax needs to be larger or equal to the resolution of the grid')
