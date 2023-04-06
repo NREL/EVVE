@@ -1,10 +1,15 @@
+# ----------------------- #
+# written by Regis Thedin
+# regis.thedin@nrel.gov
+# ----------------------- #
+
 import xarray as xr
 import numpy as np
 from scipy import ndimage
 from scipy.interpolate import griddata
 import matplotlib.pyplot as plt
 
-class evve_orographic:
+class orographic:
 
     def __init__(self, ds, elev_var=None):
         '''
