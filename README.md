@@ -8,7 +8,7 @@ An improved orographic updraft model based on that of Brandes and Ombalski (2004
 
 The inputs are: digital elevation model (DEM) of the region of interest, the wind direction, the desired height, and the wind speed at a reference height of 80 m. The orographic updraft using the EVVE model can be obtained using
 
-```
+```python
 from evve.orographic import orographic
 import xarray as xr
 
@@ -19,8 +19,8 @@ ds = xr.open_dataset('examples/ds_WY.nc')  # see file for example format
 evve_orog = orographic(ds)
 
 # Estimate the orographic updraft using the EVVE model
-evve_orog.calcOrographicUpdraft(wdir = 270,      # desired wind direction in typical wind convention,
-                                h = 120,         # height of interest where the updrafts will be estimated
+evve_orog.calcOrographicUpdraft(wdir = 270,      # desired wind dir in typical wind convention
+                                h = 120,         # height where the updrafts will be estimated
                                 wspdAtRef = 8,   # wind speed at a reference height of 80 m AGL
                                 model = 'evve'   # model of interest. Options are 'evve' or 'bo04'
                                )
@@ -38,6 +38,6 @@ The thermal updraft model is a work in progress. It requires coupling to [HRRR](
 
 
 ## References
-- Thedin, R, Brandes, D, Quon, E, Sandhu, R, Tripp, C. "A three-dimensional model of terrain-induced updrafts for movement ecology studies". Under review, Journal of Ecological Applications, 2023.
+- Thedin, R, Brandes, D, Quon, E, Sandhu, R, Tripp, C. "A three-dimensional model of terrain-induced updrafts for movement ecology studies". Under review, Journal of Movement Ecology, 2023.
 
 - Brandes, D., & Ombalski, D. W. "Modeling raptor migration pathways using a fluid-flow analogy". Journal of Raptor Research, v. 38, 2004 
