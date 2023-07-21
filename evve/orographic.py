@@ -420,23 +420,27 @@ class orographic:
         
         xx, yy = np.meshgrid(self.ds['x'], self.ds['y'], indexing='ij')
 
+        # Get flipped wdir for Sx calculation
+        wdir_sx = (self.wdir+180)%360   # part of Eq. (5)
+
         # Get number of points
         npoints = 1+int(dmax/self.res)
         if dmax < self.res:
             raise ValueError('dmax needs to be larger or equal to the resolution of the grid')
         
         # Get upstream direction
-        if    self.wdir==0:                     upstreamDirX=0;  upstreamDirY=-1
-        elif  self.wdir==90:                    upstreamDirX=-1; upstreamDirY=0
-        elif  self.wdir==180:                   upstreamDirX=0;  upstreamDirY=1
-        elif  self.wdir==270:                   upstreamDirX=1;  upstreamDirY=0
-        elif  self.wdir>0   and self.wdir<90:   upstreamDirX=-1; upstreamDirY=-1
-        elif  self.wdir>90  and self.wdir<180:  upstreamDirX=-1; upstreamDirY=1
-        elif  self.wdir>180 and self.wdir<270:  upstreamDirX=1;  upstreamDirY=1
-        elif  self.wdir>270 and self.wdir<360:  upstreamDirX=1;  upstreamDirY=-1
+        wdir_sx = wdir_sx%360
+        if    wdir_sx==0:                     upstreamDirX=0;  upstreamDirY=-1
+        elif  wdir_sx==90:                    upstreamDirX=-1; upstreamDirY=0
+        elif  wdir_sx==180:                   upstreamDirX=0;  upstreamDirY=1
+        elif  wdir_sx==270:                   upstreamDirX=1;  upstreamDirY=0
+        elif  wdir_sx>0   and wdir_sx<90:   upstreamDirX=-1; upstreamDirY=-1
+        elif  wdir_sx>90  and wdir_sx<180:  upstreamDirX=-1; upstreamDirY=1
+        elif  wdir_sx>180 and wdir_sx<270:  upstreamDirX=1;  upstreamDirY=1
+        elif  wdir_sx>270 and wdir_sx<360:  upstreamDirX=1;  upstreamDirY=-1
 
         # change angle notation
-        ang = np.deg2rad(270-self.wdir)
+        ang = np.deg2rad(270-wdir_sx)
 
         # array for interpolation using griddata
         points = np.array( (xx.flatten(), yy.flatten()) ).T
@@ -446,7 +450,7 @@ class orographic:
         # create rotated grid. This way we sample into a interpolated grid that has the exact points we need
         xmin = min(self.ds['x']);  xmax = max(self.ds['x'])
         ymin = min(self.ds['y']);  ymax = max(self.ds['y'])
-        if self.wdir%90 == 0:
+        if wdir_sx%90 == 0:
             # if flow is aligned, we don't need a new grid
             xrot = xx[:,0]
             yrot = yy[0,:]
@@ -454,8 +458,8 @@ class orographic:
             yyrot = yy
             elevrot = zagl
         else:
-            xrot = np.arange(xmin, xmax+0.1, abs(res*np.cos(ang)))
-            yrot = np.arange(ymin, ymax+0.1, abs(res*np.sin(ang)))
+            xrot = np.arange(xmin, xmax+0.1, abs(self.res*np.cos(ang)))
+            yrot = np.arange(ymin, ymax+0.1, abs(self.res*np.sin(ang)))
             xxrot, yyrot = np.meshgrid(xrot, yrot, indexing='ij')
             elevrot = griddata( points, values, (xxrot, yyrot), method='linear' )
 
